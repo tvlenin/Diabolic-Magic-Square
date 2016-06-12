@@ -1,5 +1,3 @@
-probar(X):-X is "A",X is "B".
-
 %---------------------Validations---------------------
 diabolic([1,8,13,12,14,11,2,7,4,5,16,9,15,10,3,6]).
 diabolic([1,12,7,14,8,13,2,11,10,3,16,5,15,6,9,4]).
@@ -76,49 +74,45 @@ diabolic(A,B,C,D,E,F,G,H):-diabolic(A,B,C,D,E,F,G),rotationCenter(D,H).
 diabolic(A,B,C,D,E,F,G,H,I):-diabolic(A,B,C,D,E,F,G,H),rotationColumns(B,I).
 diabolic(A,B,C,D,E,F,G,H,I,J):-diabolic(A,B,C,D,E,F,G,H,I),rotationRows(B,J).
 
- 	
+
 %---------------------Showall---------------------
-showall(X):-showall( [1,8,13,12,14,11,2,7,4,5,16,9,15,10,3,6], [1,12,7,14,8,13,2,11,10,3,16,5,15,6,9,4], [1,8,11,14,12,13,2,7,6,3,16,9,15,10,5,4],X).
-showall(A,B,C,X):-
-	showall(A,X),
-	showall(B,X),
-	showall(C,X).
-	
-showall(A,X):-
+showall:-showall( [1,8,13,12,14,11,2,7,4,5,16,9,15,10,3,6], [1,12,7,14,8,13,2,11,10,3,16,5,15,6,9,4], [1,8,11,14,12,13,2,7,6,3,16,9,15,10,5,4]).
+showall(A,B,C):-
+	showall(A),
+	showall(B),
+	showall(C).
+showall(A):-
 	reflection(A,ReflectionOfA),
-	showallaux(A,X),
-	showallaux(ReflectionOfA,X).
+	showallaux(A),
+	showallaux(ReflectionOfA).
 
 %Have the first magic squares and call all other auxiliars.
-showallaux(A,X):-
-	rotationCenter(A,RotationOfA),X=RotationOfA,
-	convolution(A,ConvolutionOfA), 
-	rotationCenter(ConvolutionOfA,RotationCenterOfA), 
-	convolution(RotationOfA,RotationOfAConv), 
-	%get([RotationOfA,ConvolutionOfA,RotationCenterOfA,RotationOfAConv],X),
-	print([RotationOfA,ConvolutionOfA,RotationCenterOfA,RotationOfAConv],X),
-	auxRotate3Rows(A,X),
-	auxRotate3Rows(RotationOfA,X),
-	auxRotate3Rows(ConvolutionOfA,X),
-	auxRotate3Rows(RotationCenterOfA,X),
-	auxRotate3Rows(RotationOfAConv,X).
+showallaux(A):-
+	rotationCenter(A,RotationOfA),
+	convolution(A,ConvolutionOfA),
+	rotationCenter(ConvolutionOfA,RotationCenterOfA),
+	convolution(RotationOfA,RotationOfAConv),
+	print([RotationOfA,ConvolutionOfA,RotationCenterOfA,RotationOfAConv]),
+	auxRotate3Rows(A),
+	auxRotate3Rows(RotationOfA),
+	auxRotate3Rows(ConvolutionOfA),
+	auxRotate3Rows(RotationCenterOfA),
+	auxRotate3Rows(RotationOfAConv).
 
 %rotate a row and a column three times 
-auxRotate3Rows(A,X):-
+auxRotate3Rows(A):-
 	rotationRows(A,A1),
-	auxRotate3Columns(A1,X),
+	auxRotate3Columns(A1),
 	rotationRows(A1,A2),
-	auxRotate3Columns(A2,X),
+	auxRotate3Columns(A2),
 	rotationRows(A2,A3),
-	auxRotate3Columns(A3,X),
-	%get([A1,A2,A3],X).
-	print([A1,A2,A3],X).
-auxRotate3Columns(A,X):-
+	auxRotate3Columns(A3),
+	print([A1,A2,A3]).
+auxRotate3Columns(A):-
 	rotationColumns(A,A1),
 	rotationColumns(A1,A2),
 	rotationColumns(A2,A3),
-	%get([A1,A2,A3],X).
-	print([A1,A2,A3],X).	
+	print([A1,A2,A3]).	
 	 
  
 %-------------------------Transformations--------------
@@ -188,9 +182,24 @@ add(Val,[H|List],Pos,[H|Res]):- Pos > 1,!,Pos1 is Pos - 1,
 add(Val,List,Pos1,Res). 
 add(Val, List, 1, [Val|List]).
 
+
 %this function prints a list 
+%print([]).
+%print([X|Xs]):-
+%	write(X),
+%	nl,
+%	print(Xs).
+
 print([]).
-print([X|Xs],X):-
-	write(X),
+print( [ [A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4] |Xs]):-
+	write('------------'),
 	nl,
-	print(Xs,X).
+	write([A1,A2,A3,A4]),
+	nl,
+	write([B1,B2,B3,B4]),
+	nl,
+	write([C1,C2,C3,C4]),
+	nl,
+	write([D1,D2,D3,D4]),
+	nl,
+	print(Xs).
