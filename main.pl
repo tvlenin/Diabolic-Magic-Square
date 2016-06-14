@@ -54,16 +54,7 @@ B2+B4+D2+D4=:=34,
 %_____4x4(corners)____
 A1+A4+D1+D4=:=34.
 
-
-
-%A4+B3+C2+D1=:=34, A1+B2+C3+D4=:=34,%Cheking diagonals.
-%A1+A2+A3+A4=:=34, B1+B2+B3+B4=:=34, C1+C2+C3+C4=:=34, D1+D2+D3+D4=:=34,%Checking rows. 
-%A1+B1+C1+D1=:=34, A2+B2+C2+D2=:=34, A3+B3+C3+D3=:=34, A4+B4+C4+D4=:=34,%Checking columns.
-%A1+A3+C1+C3=:=34, A2+A4+C2+C4=:=34, B1+B3+D1+D3=:=34, B2+B4+D2+D4=:=34,%Checking 3x3 square corners.
-%A1+A2+B1+B2=:=34, A3+A4+B3+B4=:=34, C1+C2+D1+D2=:=34, C3+C4+D3+D4=:=34, A2+A3+B2+B3=:=34, C2+C3+D2+D3=:=34, %Checking 2x2 squares.
-%A1+B1+C3+D3=:=34, A2+B2+C4+D4=:=34, A3+B3+C1+D1=:=34, A4+B4+C2+D2=:=34, A1+A2+C3+C4=:=34, A3+A4+C1+C2=:=34, B1+B2+D3+D4=:=34, B3+B4+D1+D2=:=34. %Checking desplaced pairs.
-
-
+%recursevily obtains one diabolic square, and calls for one less argument, curry like.
 diabolic(A,B):- diabolic(A), reflection(A,B).
 diabolic(A,B,C):- diabolic(A,B),rotationCenter(A,C).
 diabolic(A,B,C,D):-diabolic(A,B,C),rotationColumns(A,D).
@@ -76,17 +67,20 @@ diabolic(A,B,C,D,E,F,G,H,I,J):-diabolic(A,B,C,D,E,F,G,H,I),rotationRows(B,J).
 
 
 %---------------------Showall---------------------
+%It starts with the three basic forms of the magic squares,
 showall:-showall( [1,8,13,12,14,11,2,7,4,5,16,9,15,10,3,6], [1,12,7,14,8,13,2,11,10,3,16,5,15,6,9,4], [1,8,11,14,12,13,2,7,6,3,16,9,15,10,5,4]).
 showall(A,B,C):-
 	showall(A),
 	showall(B),
 	showall(C).
+%Computes for each, the reflection and itself all the possible transformations for these two lists
 showall(A):-
 	reflection(A,ReflectionOfA),
 	showallaux(A),
 	showallaux(ReflectionOfA).
 
 %Have the first magic squares and call all other auxiliars.
+%For A computes all the possible combinations, and writes the output, user friendly on console.
 showallaux(A):-
 	rotationCenter(A,RotationOfA),
 	convolution(A,ConvolutionOfA),
@@ -116,6 +110,7 @@ auxRotate3Columns(A):-
 	 
  
 %-------------------------Transformations--------------
+%just interchanges two columns
 reflection([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	diabolic([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4]),
 	reverse([A1,A2,A3,A4],LA),
@@ -127,6 +122,7 @@ reflection([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	append(Y,LD,ANS),
 	diabolic(ANS).
 
+%interchanges in a rotation the middle values of the matrix counterwise
 rotationCenter([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	diabolic([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4]),
 	add(B1,[A1,A4],2,T),
@@ -142,6 +138,7 @@ rotationCenter([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	append(Y,X,ANS),
 	diabolic(ANS).
 	
+%a simple movement to slice the colunms of position
 rotationColumns([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	diabolic([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4]),
 	rotatelist([A1,A2,A3,A4],L1),
@@ -152,7 +149,7 @@ rotationColumns([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	append(X,L3,Y),
 	append(Y,L4,ANS),
 	diabolic(ANS).
-
+%simple rotation of the rows 
 rotationRows([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	diabolic([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4]),
 	rotatelist([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],W),
@@ -170,26 +167,19 @@ convolution([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4],ANS):-
 	
 	
 %-----------------------AUXILIARY ------------------
+%simple action of reverse the list
 reverse(list,list).
 reverse(InList,Outlist):- reverseAux(InList,[],Outlist). 
 reverseAux(list,list,list).
 reverseAux([],Outlist,Outlist).    
 reverseAux([Head|Tail],L1,L2):-reverseAux(Tail,[Head|L1],L2).
-
 rotatelist([H|T], R) :- append(T, [H], R).
 %Insert an element in the nth place
 add(Val,[H|List],Pos,[H|Res]):- Pos > 1,!,Pos1 is Pos - 1, 
 add(Val,List,Pos1,Res). 
 add(Val, List, 1, [Val|List]).
 
-
-%this function prints a list 
-%print([]).
-%print([X|Xs]):-
-%	write(X),
-%	nl,
-%	print(Xs).
-
+%Friendly output in the console, for the matrix
 print([]).
 print( [ [A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4] |Xs]):-
 	write('------------'),
